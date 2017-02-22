@@ -3,6 +3,13 @@
 
 COpenGLControl::COpenGLControl(void)
 {
+	m_fPosX = 0.0f;  // X position of model in camera view
+	m_fPosY = 0.0f;  // Y position of model in camera view
+	m_fZoom = 10.0f; // Zoom on model in camera view
+	m_fRotX = 0.0f;  // Rotation on model in camera view
+	m_fRotY = 0.0f;  // Rotation on model in camera view
+	m_bIsMaximized = false;
+
 }
 
 COpenGLControl::~COpenGLControl(void)
@@ -28,6 +35,7 @@ BEGIN_MESSAGE_MAP(COpenGLControl, CWnd)
 	ON_WM_CREATE()
 	ON_WM_TIMER()
 	ON_WM_SIZE()
+	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 
 void COpenGLControl::OnPaint()
@@ -87,6 +95,12 @@ int COpenGLControl::OnCreate(LPCREATESTRUCT lpCreateStruct)
 void COpenGLControl::OnDraw(CDC *pDC)
 {
 	//TODO
+	//if the current view is perspective
+	glLoadIdentity();
+	glTranslatef(0.0f, 0.0f, -m_fZoom);
+	glTranslatef(m_fPosX, m_fPosY, 0.0f);
+	glRotatef(m_fRotX, 1.0f, 0.0f, 0.0f);
+	glRotatef(m_fRotY, 0.0f, 1.0f, 0.0f);
 }
 
 void COpenGLControl::OnTimer(UINT_PTR nIDEvent)
@@ -100,7 +114,7 @@ void COpenGLControl::OnTimer(UINT_PTR nIDEvent)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//Draw OpenGL scene
-		//oglDrawScene();
+		oglDrawScene();
 
 		//Swap buffers
 		SwapBuffers(hdc);
@@ -128,4 +142,81 @@ void COpenGLControl::OnSize(UINT nType, int cx, int cy)
 	// Model view      
 	glMatrixMode(GL_MODELVIEW);
 
+}
+
+void COpenGLControl::oglDrawScene(void)
+{  
+	// Wireframe Mode    
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);      
+	glBegin(GL_QUADS);       
+	// Top Side       
+	glVertex3f( 1.0f, 1.0f,  1.0f);       
+	glVertex3f( 1.0f, 1.0f, -1.0f);       
+	glVertex3f(-1.0f, 1.0f, -1.0f);       
+	glVertex3f(-1.0f, 1.0f,  1.0f);        
+	// Bottom Side       
+	glVertex3f(-1.0f, -1.0f, -1.0f);       
+	glVertex3f( 1.0f, -1.0f, -1.0f);       
+	glVertex3f( 1.0f, -1.0f,  1.0f);       
+	glVertex3f(-1.0f, -1.0f,  1.0f);         
+	// Front Side       
+	glVertex3f( 1.0f,  1.0f, 1.0f);       
+	glVertex3f(-1.0f,  1.0f, 1.0f);       
+	glVertex3f(-1.0f, -1.0f, 1.0f);       
+	glVertex3f( 1.0f, -1.0f, 1.0f);         
+	// Back Side       
+	glVertex3f(-1.0f, -1.0f, -1.0f);       
+	glVertex3f(-1.0f,  1.0f, -1.0f);       
+	glVertex3f( 1.0f,  1.0f, -1.0f);       
+	glVertex3f( 1.0f, -1.0f, -1.0f);       
+	// Left Side       
+	glVertex3f(-1.0f, -1.0f, -1.0f);       
+	glVertex3f(-1.0f, -1.0f,  1.0f);       
+	glVertex3f(-1.0f,  1.0f,  1.0f);       
+	glVertex3f(-1.0f,  1.0f, -1.0f);        
+	// Right Side       
+	glVertex3f( 1.0f,  1.0f,  1.0f);      
+	glVertex3f( 1.0f, -1.0f,  1.0f);      
+	glVertex3f( 1.0f, -1.0f, -1.0f);      
+	glVertex3f( 1.0f,  1.0f, -1.0f);     
+	glEnd();
+}
+
+
+void COpenGLControl::OnMouseMove(UINT nFlags, CPoint point)
+{
+	// TODO: Add your message handler code here and/or call default
+	int diffX = (int)(point.x - m_fLastX);
+	int diffY = (int)(point.y - m_fLastY);
+	m_fLastX  = (float)point.x;
+	m_fLastY  = (float)point.y;
+	// Left mouse button
+	if (nFlags & MK_LBUTTON)
+	{
+		m_fRotX += (float)0.5f * diffY;
+		if ((m_fRotX > 360.0f) || (m_fRotX < -360.0f))
+		{
+			m_fRotX = 0.0f;
+		}
+		m_fRotY += (float)0.5f * diffX;
+		if ((m_fRotY > 360.0f) || (m_fRotY < -360.0f))
+		{
+			m_fRotY = 0.0f;
+		}
+	}
+	// Right mouse button
+	else if (nFlags & MK_RBUTTON)
+	{
+		m_fZoom -= (float)0.1f * diffY;
+	}
+	// Middle mouse button
+	else if (nFlags & MK_MBUTTON)
+	{
+		m_fPosX += (float)0.05f * diffX;
+		m_fPosY -= (float)0.05f * diffY;
+	}
+	OnDraw(NULL);
+
+
+	CWnd::OnMouseMove(nFlags, point);
 }

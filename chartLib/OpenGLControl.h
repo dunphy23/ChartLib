@@ -22,6 +22,15 @@ public:
 	~COpenGLControl(void);
 	// Timer         
 	UINT_PTR m_unpTimer;    
+	// View information variables
+	float  m_fLastX;
+	float  m_fLastY;
+	float  m_fPosX;
+	float  m_fPosY;
+	float  m_fZoom;
+	float  m_fRotX;
+	float  m_fRotY;
+	bool  m_bIsMaximized;
 
 	void oglCreate(CRect rect, CWnd *parent);
 
@@ -31,4 +40,6 @@ public:
 	afx_msg void OnDraw(CDC *pDC);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	void oglDrawScene(void);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 };
