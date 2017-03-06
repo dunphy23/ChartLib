@@ -6,6 +6,9 @@
 #include "chartLib.h"
 #include "chartLibDlg.h"
 
+
+
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -63,6 +66,7 @@ BEGIN_MESSAGE_MAP(CchartLibDlg, CDialog)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	//}}AFX_MSG_MAP
+	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 
 
@@ -109,6 +113,8 @@ BOOL CchartLibDlg::OnInitDialog()
 	m_oglWindow.oglCreate(rect, this);
 	//setup the openGL window's timer to render
 	m_oglWindow.m_unpTimer = m_oglWindow.SetTimer(1, 1, 0);
+
+
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -162,3 +168,10 @@ HCURSOR CchartLibDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
+void CchartLibDlg::OnMouseMove(UINT nFlags, CPoint point)
+{
+	// TODO: Add your message handler code here and/or call default
+	//printf("dlg move\n");
+	CDialog::OnMouseMove(nFlags, point);
+}

@@ -9,7 +9,7 @@ class COpenGLControl : public CWnd
 {
 private:       
 	// Window information       
-	CWnd    *hWnd;       
+	CWnd    *hWnd;       //실제로 그림이 그려지는 영역
 	HDC     hdc;       
 	HGLRC   hrc;       
 	int     m_nPixelFormat;       

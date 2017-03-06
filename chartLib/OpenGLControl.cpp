@@ -1,6 +1,9 @@
 #include "StdAfx.h"
 #include "OpenGLControl.h"
 
+#include "FirstChart.h"
+#include "ConcreteVisitor.h"
+#include "Chart.h"
 COpenGLControl::COpenGLControl(void)
 {
 	m_fPosX = 0.0f;  // X position of model in camera view
@@ -28,6 +31,14 @@ void COpenGLControl::oglCreate(CRect rect, CWnd *parent)
 	m_originalRect = rect;
 
 	hWnd = parent;
+	
+
+	//17.03.06 비지터 구현 테스트
+	Visitor* v1 = new ConcreteVisitor();
+	Chart* eA = new FirstChart();
+
+	eA->Accept(v1);
+	
 }
 
 BEGIN_MESSAGE_MAP(COpenGLControl, CWnd)
@@ -40,11 +51,30 @@ END_MESSAGE_MAP()
 
 void COpenGLControl::OnPaint()
 {
-	//CPaintDC dc(this); // device context for painting
-
+//	CPaintDC dc(this); // device context for painting
+	
 	ValidateRect(NULL);
 
 }
+
+void DrawMyShape(CDC *paramDC, CPoint point)
+{
+	//CPen객체를 굵기 1의 빨간색 실선으로 생성합니다.
+	CPen redPen(PS_SOLID, 1, RGB(255, 0, 0));
+
+	//이 전 색상을 저장하기 위해 CPen의 포인터 객체를 생성합니다.
+	//CDC의 포인터에 접근하여 SelectObject() 함수를 호출하고,
+	//인자값으로 redPen변수의 주소를 넘깁니다.
+	//현재 선의 색상은 빨간색으로 지정되었고, oldPen에는 이 전 색상이 저장되어있습니다.
+	CPen *oldPen = paramDC->SelectObject(&redPen);
+
+	//사각형의 선부분을 빨간색으로 지정하며 그려낸다.
+	paramDC->Rectangle(point.x, point.y, point.x + 20, point.y + 20);
+	//CDC의 포인터에 접근하여 oldPen의 주소를 넘깁니다.
+	//이 전의 색상으로 돌려놓는 작업입니다.
+	paramDC->SelectObject(oldPen);
+}//DrawMyShape
+
 
 int COpenGLControl::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
@@ -78,13 +108,15 @@ int COpenGLControl::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	//    
 	// Set color to use when clearing the background.    
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);    
+	//glClearColor(1.0f, 1.0f, 1.0f, 1.0f);    
 	glClearDepth(1.0f);     
 	// Turn on backface culling    
 	glFrontFace(GL_CCW);    
 	glCullFace(GL_BACK);     
 	// Turn on depth testing    
 	glEnable(GL_DEPTH_TEST);   
-	glDepthFunc(GL_LEQUAL);     
+	glDepthFunc(GL_LEQUAL);   
+
 	// Send draw request    
 	OnDraw(NULL);
 	///////////////////////////////////////////////
@@ -96,11 +128,13 @@ void COpenGLControl::OnDraw(CDC *pDC)
 {
 	//TODO
 	//if the current view is perspective
+
 	glLoadIdentity();
 	glTranslatef(0.0f, 0.0f, -m_fZoom);
 	glTranslatef(m_fPosX, m_fPosY, 0.0f);
 	glRotatef(m_fRotX, 1.0f, 0.0f, 0.0f);
 	glRotatef(m_fRotY, 0.0f, 1.0f, 0.0f);
+
 }
 
 void COpenGLControl::OnTimer(UINT_PTR nIDEvent)
@@ -126,12 +160,15 @@ void COpenGLControl::OnTimer(UINT_PTR nIDEvent)
 	CWnd::OnTimer(nIDEvent);
 }
 
+
 void COpenGLControl::OnSize(UINT nType, int cx, int cy)
 {
 	CWnd::OnSize(nType, cx, cy);
 
 	// TODO: Add your message handler code here
 	if (0 >= cx || 0 >= cy || nType == SIZE_MINIMIZED) return;       
+
+	printf("cx : %d, cy : %d\n", cx,cy);
 	// Map the OpenGL coordinates.      
 	glViewport(0, 0, cx, cy);       
 	// Projection view      
@@ -146,6 +183,9 @@ void COpenGLControl::OnSize(UINT nType, int cx, int cy)
 
 void COpenGLControl::oglDrawScene(void)
 {  
+	//DrawMyShape(this->GetDC(), *(new CPoint(359/2,267/2)));
+	
+
 	// Wireframe Mode    
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);      
 	glBegin(GL_QUADS);       
@@ -180,11 +220,15 @@ void COpenGLControl::oglDrawScene(void)
 	glVertex3f( 1.0f, -1.0f, -1.0f);      
 	glVertex3f( 1.0f,  1.0f, -1.0f);     
 	glEnd();
+
 }
 
-
+//마우스 움직일때 발생하는 이벤트
+//조건문에서 MK_LBUTTON 등으로 플래그 조건을 통해
+//클릭 된 상태로 움직이는지(드래그)를 판단하여 동작하도록 구성되있음
 void COpenGLControl::OnMouseMove(UINT nFlags, CPoint point)
 {
+	//printf("gl move!\n");
 	// TODO: Add your message handler code here and/or call default
 	int diffX = (int)(point.x - m_fLastX);
 	int diffY = (int)(point.y - m_fLastY);
