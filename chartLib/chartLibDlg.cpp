@@ -189,21 +189,25 @@ BOOL CchartLibDlg::OnInitDialog()
 
 	// Disable the refresh
 	m_ChartCtrl.EnableRefresh(false);
-	COleDateTime Min(2008,1,1,0,0,0);
-	COleDateTime Max(2008,12,1,0,0,0);
+	//COleDateTime Min(2008,1,1,0,0,0);
+	//COleDateTime Max(2008,12,1,0,0,0);
+
 	// Create the bottom axis and configure it properly
-	CChartDateTimeAxis* pBottomAxis =
-		m_ChartCtrl.CreateDateTimeAxis(CChartCtrl::BottomAxis);
-	pBottomAxis->SetMinMax(Min,Max);
+//	CChartDateTimeAxis* pBottomAxis =m_ChartCtrl.CreateDateTimeAxis(CChartCtrl::BottomAxis);
+	CChartStandardAxis* pBottomAxis =m_ChartCtrl.CreateStandardAxis(CChartCtrl::BottomAxis);
+		
+	//pBottomAxis->SetMinMax(Min,Max);
+	pBottomAxis->SetMinMax(0,100);
 	pBottomAxis->SetDiscrete(true);
-	pBottomAxis->SetTickIncrement(false,CChartDateTimeAxis::tiMonth,1);
-	pBottomAxis->SetTickLabelFormat(false,_T("%b"));
-	pBottomAxis->GetLabel()->SetText(_T("Month"));
+	//pBottomAxis->SetTickIncrement(false,CChartDateTimeAxis::tiMonth,1);
+	pBottomAxis->SetTickIncrement(false, 10);
+	//pBottomAxis->SetTickLabelFormat(false,_T("%b"));
+	pBottomAxis->GetLabel()->SetText(_T("X"));
 	// Create the left axis and configure it properly
 	CChartStandardAxis* pLeftAxis =
 		m_ChartCtrl.CreateStandardAxis(CChartCtrl::LeftAxis);
 	pLeftAxis->SetMinMax(0,100);
-	pLeftAxis->GetLabel()->SetText(_T("Units sold"));
+	pLeftAxis->GetLabel()->SetText(_T("Y"));
 	
 	
 	/*// Create the right axis and configure it properly
@@ -235,14 +239,16 @@ BOOL CchartLibDlg::OnInitDialog()
 	//CChartLineSerie* pLineSeries = m_ChartCtrl.CreateLineSerie(false,true);
 	int lowIndex = -1;
 	int lowVal = 999;
-	for (int i=0;i<12;i++)
+	for (int i=0;i<100;i+=10)
 	{
-		COleDateTime TimeVal(2008,i+1,1,0,0,0);
+		//COleDateTime TimeVal(2008,i+1,1,0,0,0);
 		int DesktopVal = 20 + rand()%(100-30);
-		pBarSeries1->AddPoint(TimeVal,DesktopVal);
+		//pBarSeries1->AddPoint(TimeVal,DesktopVal);
+		pBarSeries1->AddPoint(i+1,DesktopVal);
 
 		int LaptopVal = 10 + rand()%(80-20);
-		pBarSeries2->AddPoint(TimeVal,LaptopVal);
+		//pBarSeries2->AddPoint(TimeVal,LaptopVal);
+		pBarSeries2->AddPoint(i+1,LaptopVal);
 
 		/*
 		int Income = DesktopVal + LaptopVal*1.5;
@@ -256,7 +262,7 @@ BOOL CchartLibDlg::OnInitDialog()
 	}
 	// Configure the series properly
 	pBarSeries1->SetColor(RGB(255,0,0));
-	pBarSeries1->SetName(_T("Desktops"));
+	pBarSeries1->SetName(_T("first"));
 	pBarSeries1->SetBarWidth(10);
 
 
@@ -266,7 +272,7 @@ BOOL CchartLibDlg::OnInitDialog()
 	////바 차트 내부 패턴 넣기	
 	//pBarSeries2->SetGradient(RGB(200,200,255),gtVerticalDouble);
 
-	pBarSeries2->SetName(_T("Laptops"));
+	pBarSeries2->SetName(_T("second"));
 	//경계 넣기
 	//pBarSeries2->SetBorderColor(RGB(0,0,255));
 	//pBarSeries2->SetBorderWidth(3);
