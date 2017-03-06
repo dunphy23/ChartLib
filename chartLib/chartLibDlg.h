@@ -4,6 +4,11 @@
 
 #pragma once
 #include "OpenGLControl.h"
+#include "ChartCtrl.h"
+#include "ChartLineSerie.h"
+#include "ChartStandardAxis.h"
+#include "ChartBarSerie.h"
+#include "ChartAxisLabel.h"
 
 //17.03.03 by dhSeo for debug
 #pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
@@ -19,7 +24,9 @@ public:
 
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
+	
 
+	CChartCtrl m_ChartCtrl;
 private:
 	COpenGLControl m_oglWindow;
 
