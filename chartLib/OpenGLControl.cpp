@@ -1,9 +1,7 @@
 #include "StdAfx.h"
 #include "OpenGLControl.h"
 
-#include "FirstChart.h"
-#include "ConcreteVisitor.h"
-#include "Chart.h"
+
 COpenGLControl::COpenGLControl(void)
 {
 	m_fPosX = 0.0f;  // X position of model in camera view
@@ -33,11 +31,7 @@ void COpenGLControl::oglCreate(CRect rect, CWnd *parent)
 	hWnd = parent;
 	
 
-	//17.03.06 비지터 구현 테스트
-	Visitor* v1 = new ConcreteVisitor();
-	Chart* eA = new FirstChart();
-
-	eA->Accept(v1);
+	
 	
 }
 

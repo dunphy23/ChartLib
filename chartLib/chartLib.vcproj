@@ -196,6 +196,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ChartManager.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\OpenGLControl.cpp"
 				>
 			</File>
@@ -343,6 +347,10 @@
 			</File>
 			<File
 				RelativePath=".\chartLibDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ChartManager.h"
 				>
 			</File>
 			<File

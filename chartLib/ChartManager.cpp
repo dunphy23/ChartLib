@@ -1,29 +1,21 @@
-#include "stdafx.h"
-#include "FirstChart.h"
-#include "visitor.h"
+#include "StdAfx.h"
+#include "ChartManager.h"
 
-FirstChart::FirstChart()
+ChartManager::ChartManager(void)
 {
-
-}
-FirstChart::~FirstChart()
-{
-
 }
 
-void FirstChart::Accept(Visitor* v)
+ChartManager::~ChartManager(void)
 {
-	v->VisitChart(this);
+}
 
-}
-void FirstChart::OperationA()
+void ChartManager::TempFunc()
 {
-	//FirstChart ±¸ÇöºÎ
-	printf("visit ConcreteElement A\n");
+	printf("ChartManager func test\n");
 }
-void FirstChart::Draw(CDC* pDC)
+void ChartManager::Draw()
 {
-	
+
 	//exam01. 17.03.06
 	srand((unsigned int)time(NULL));
 	//m_ChartCtrl.SetDC(pDC);

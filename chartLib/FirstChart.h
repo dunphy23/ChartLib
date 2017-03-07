@@ -7,5 +7,5 @@ public:
 	virtual ~FirstChart();
 	virtual void Accept(Visitor*)override;
 	virtual void OperationA();
-	virtual void Draw() override;
+	virtual void Draw(CDC* pDC) override;
 };
